@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coding test</title>
+    <style>
+      * {
+        margin-bottom: 1em;
+      }
+      .header {
+        text-align: center;
+      }
+      .content {
+        display: flex;
+        justify-content: center;
+        margin: 2em;
+        gap: 2em;
+      }
+      .soal {
+        background-color: beige;
+        width: 35vh;
+        text-align: left;
+        padding: 5px;
+      }
+      span {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h2>Inputkan Kalimat</h2>
+      <form id="inputKalimat">
+        <input type="text" id="kalimat" placeholder="Masukkan kalimat" />
+        <button type="submit">Convert</button>
+      </form>
+    </div>
+    <div class="content">
+      <div class="soal">
+        <h3>Soal 1</h3>
+        <p>kalimat ke bilangan: <span id="hasilSoal1"></span></p>
+      </div>
+      <div class="soal">
+        <h3>Soal 2</h3>
+        <p>Sample Operasi: <span id="sampleOp2"></span></p>
+        <p>Hasil soal 2: <span id="hasilSoal2"></span></p>
+      </div>
+      <div class="soal">
+        <h3>Soal 3</h3>
+        <p>hasil soal 3: <span id="hasilSoal3"></span></p>
+      </div>
+      <div class="soal">
+        <h3>Soal 4</h3>
+        <p>Sample Operasi: <span id="hasilSoal4"></span></p>
+        <p>bilangan baru: <span id="hasilSoal4Bil"></span></p>
+        <p>hasil huruf: <span id="hasilSoal4Huruf"></span></p>
+      </div>
+      <div class="soal">
+        <h3>Soal 5</h3>
+        <p>
+          hasil huruf dari output soal 4: <span id="hasilSoal5Huruf"></span>
+        </p>
+        <p>hasil bilangan: <span id="hasilSoal5Bil"></span></p>
+      </div>
+    </div>
+
+    <script>
+      const kamus = {
+        A: "0",
+        B: "1",
+        C: "1",
+        D: "1",
+        E: "2",
+        F: "3",
+        G: "3",
+        H: "3",
+        I: "4",
+        J: "5",
+        K: "5",
+        L: "5",
+        M: "5",
+        N: "5",
+        O: "6",
+        P: "7",
+        Q: "7",
+        R: "7",
+        S: "7",
+        T: "7",
+        U: "8",
+        V: "9",
+        W: "9",
+        X: "9",
+        Y: "9",
+        Z: "9",
+        a: "9",
+        b: "8",
+        c: "8",
+        d: "8",
+        e: "7",
+        f: "6",
+        g: "6",
+        h: "6",
+        i: "5",
+        j: "4",
+        k: "4",
+        l: "4",
+        m: "4",
+        n: "4",
+        o: "3",
+        p: "2",
+        q: "2",
+        r: "2",
+        s: "2",
+        t: "2",
+        u: "1",
+        v: "0",
+        w: "0",
+        x: "0",
+        y: "0",
+        z: "0",
+        " ": "0",
+      };
+
+      const newKamus = {
+        0: "A",
+        1: "B",
+        2: "E",
+        3: "F",
+        4: "I",
+        5: "J",
+        6: "O",
+        7: "P",
+        8: "U",
+        9: "V",
+      };
+
+      document.getElementById("inputKalimat").onsubmit = function (event) {
+        event.preventDefault();
+
+        // convert ke bil sesuai kamus soal 1
+        const inputText = document.getElementById("kalimat").value;
+        let bilOutput = "";
+        for (const char of inputText) {
+          bilOutput += kamus[char] || "";
+        }
+        document.getElementById("hasilSoal1").textContent = bilOutput;
+
+        // jumlah dan kurangi, soal 2
+        let total = parseInt(bilOutput[0]);
+        let operasiDetail = [total];
+        for (let i = 1; i < bilOutput.length; i++) {
+          const num = parseInt(bilOutput[i]);
+          if (i % 2 === 1) {
+            total += num;
+            operasiDetail.push(num);
+          } else {
+            total -= num;
+            operasiDetail.push(-num);
+          }
+        }
+        document.getElementById("hasilSoal2").textContent = total;
+        const penjabaranOperasi = operasiDetail
+          .map((num, index) =>
+            index === 0
+              ? `${num}`
+              : num >= 0
+              ? `+ ${num}`
+              : `- ${Math.abs(num)}`
+          )
+          .join(" ");
+        document.getElementById("sampleOp2").textContent = penjabaranOperasi;
+
+        // soal 3
+        let positiveTotal = Math.abs(total);
+        let hasilHurufKembali = "";
+        let runningSum = 0;
+        let currentNum = 0;
+        while (runningSum < positiveTotal) {
+          let difference = positiveTotal - runningSum;
+          if (currentNum > difference) {
+            currentNum = difference;
+          }
+          runningSum += currentNum;
+          hasilHurufKembali += newKamus[currentNum];
+          currentNum++;
+          if (currentNum > 9) {
+            currentNum = 0;
+          }
+        }
+        document.getElementById("hasilSoal3").textContent = hasilHurufKembali;
+
+        // Soal 4
+        let angkaKembali = "";
+        for (let char of hasilHurufKembali) {
+          angkaKembali += kamus[char] || "";
+        }
+        document.getElementById("hasilSoal4").textContent = angkaKembali;
+
+        let totalBaru = parseInt(angkaKembali[0]);
+        let operasiDetailBaru = [parseInt(angkaKembali[0])];
+        for (let i = 1; i < angkaKembali.length; i++) {
+          let num = parseInt(angkaKembali[i]);
+          if (i % 2 === 1) {
+            totalBaru *= num;
+            operasiDetailBaru.push(`* ${num}`);
+          } else {
+            totalBaru += num;
+            operasiDetailBaru.push(`+ ${num}`);
+          }
+        }
+        let penjabaranOpBaru = operasiDetailBaru.join(" ");
+        document.getElementById(
+          "hasilSoal4"
+        ).textContent = penjabaranOpBaru;
+        document.getElementById("hasilSoal4Bil").textContent = totalBaru;
+
+        //ubah lagi
+        let processSum = 0;
+        let newestNum = 0;
+        let hasilHurufBaru = "";
+        while (processSum < totalBaru) {
+          let perbedaan = totalBaru - processSum;
+          if (newestNum > perbedaan) {
+            newestNum = perbedaan;
+          }
+          processSum += newestNum;
+          hasilHurufBaru += newKamus[newestNum];
+          newestNum++;
+          if (newestNum > 9) {
+            newestNum = 0;
+          }
+        }
+        document.getElementById("hasilSoal4Huruf").textContent = hasilHurufBaru;
+
+        let angkaBaru = "";
+        for (let char of hasilHurufBaru) {
+          angkaBaru += kamus[char] || "";
+        }
+        document.getElementById("hasilSoal5Bil").textContent = angkaBaru;
+        document.getElementById("hasilSoal5Huruf").textContent = hasilHurufBaru;
+      };
+    </script>
+  </body>
+</html>
